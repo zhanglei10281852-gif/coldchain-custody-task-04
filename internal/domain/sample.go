@@ -84,14 +84,6 @@ func (b *SampleBatch) Transition(to SampleState, now time.Time) error {
 	return nil
 }
 
-func (b SampleBatch) ReleasedReservation(now time.Time) SampleBatch {
-	released := b.Clone()
-	released.State = SampleReady
-	released.ShipmentID = ""
-	released.UpdatedAt = now.UTC()
-	return released
-}
-
 func (b SampleBatch) Clone() SampleBatch { return b }
 
 func (b SampleBatch) IsUsableAt(at time.Time) bool {

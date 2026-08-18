@@ -199,10 +199,10 @@ func (s *PlanningService) CancelShipment(ctx context.Context, shipmentID string,
 			return err
 		}
 		for _, batch := range items {
-			if batch.State != domain.SampleReserved {
-				return domain.ConflictError{Resource: "sample_batch", Reason: "reservation is no longer active"}
+			if err := batch.Transition(domain.SampleReady, now); err != nil {
+				return err
 			}
-			_ = batch.ReleasedReservation(now)
+			batch.ShipmentID = ""
 			if err := tx.UpdateSampleBatch(ctx, batch, batch.Version); err != nil {
 				return err
 			}
